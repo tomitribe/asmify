@@ -26,13 +26,13 @@
 
   <groupId>org.tomitribe.asmify</groupId>
   <artifactId>asmify</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 
   <scm>
     <connection>scm:git:git@github.com:tomitribe/asmify.git</connection>
     <url>scm:git:git@github.com:tomitribe/asmify.git</url>
     <developerConnection>scm:git:git@github.com:tomitribe/asmify.git</developerConnection>
-    <tag>asmify-0.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
