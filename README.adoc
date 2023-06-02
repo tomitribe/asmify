@@ -1,0 +1,160 @@
+# asmify
+
+Command-line tool that uses the https://asm.ow2.io/javadoc/org/objectweb/asm/util/ASMifier.html[ASMifier] utility of ASM
+ to parse bytecode of a individual class or all the classes in a zip and output to the console or a directory.
+
+The output can be useful for:
+
+ - Learning ASM.  The output is valid Java code that uses the ASM library to create bytecode identical to the specified class.
+ - Debugging bytecode modification tools.  The output essentially creates a text representation of the bytecode which can be searched or compared.
+
+## Not a decompiler
+
+This command is not a decompiler.
+
+It  should  be  noted  that not all bytecode can be translated to Java syntax.  This includes bytecode created by the Groovy, Scala, Kotlin and
+similar compilers.  Similarly, one Java source file can result in several class files.  It is not the goal of this tool to attempt to erase or
+hide the class files.
+
+## Installation
+
+Download the `asmify` binary from the latest release here:
+
+ - https://github.com/tomitribe/asmify/releases
+
+Mark the file executable and place anywhere in your Linux/Windows `PATH`.  The command requires Java 11 or higher to be available in the `PATH`.
+
+## Usage
+
+There are two command available:
+
+ - https://github.com/tomitribe/asmify/blob/main/ASMIFY-CLASS.adoc[asmify class] - Read the specified File as a class and output the ASM code required to create that class via ASM.
+ - https://github.com/tomitribe/asmify/blob/main/ASMIFY-ZIP.adoc[asmify zip] - Read the specified zip archive and output all contents to the specified directory.
+
+## Output
+
+To get an idea of the ASMified output, let's imagine we have a `Person.java` like the following:
+
+[#Person.java,java]
+----
+package org.example;
+
+public class Person {
+
+    private final String name;
+    private final int age;
+
+    public Person(final String name, final int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+----
+
+If the above `Person.java` is compiled to `Person.class` via Maven, the command `asmify class target/classes/org/example/Person.class` would output the following:
+
+[#PersonDump.java,java]
+----
+package asm.org.example;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.ConstantDynamic;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.TypePath;
+public class PersonDump implements Opcodes {
+
+public static byte[] dump () throws Exception {
+
+ClassWriter classWriter = new ClassWriter(0);
+FieldVisitor fieldVisitor;
+RecordComponentVisitor recordComponentVisitor;
+MethodVisitor methodVisitor;
+AnnotationVisitor annotationVisitor0;
+
+classWriter.visit(V11, ACC_PUBLIC | ACC_SUPER, "org/example/Person", null, "java/lang/Object", null);
+
+classWriter.visitInnerClass("java/lang/invoke/MethodHandles$Lookup", "java/lang/invoke/MethodHandles", "Lookup", ACC_PUBLIC | ACC_FINAL | ACC_STATIC);
+
+{
+fieldVisitor = classWriter.visitField(ACC_PRIVATE | ACC_FINAL, "name", "Ljava/lang/String;", null, null);
+fieldVisitor.visitEnd();
+}
+{
+fieldVisitor = classWriter.visitField(ACC_PRIVATE | ACC_FINAL, "age", "I", null, null);
+fieldVisitor.visitEnd();
+}
+{
+methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/String;I)V", null, null);
+methodVisitor.visitCode();
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitVarInsn(ALOAD, 1);
+methodVisitor.visitFieldInsn(PUTFIELD, "org/example/Person", "name", "Ljava/lang/String;");
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitVarInsn(ILOAD, 2);
+methodVisitor.visitFieldInsn(PUTFIELD, "org/example/Person", "age", "I");
+methodVisitor.visitInsn(RETURN);
+methodVisitor.visitMaxs(2, 3);
+methodVisitor.visitEnd();
+}
+{
+methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "getName", "()Ljava/lang/String;", null, null);
+methodVisitor.visitCode();
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitFieldInsn(GETFIELD, "org/example/Person", "name", "Ljava/lang/String;");
+methodVisitor.visitInsn(ARETURN);
+methodVisitor.visitMaxs(1, 1);
+methodVisitor.visitEnd();
+}
+{
+methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "getAge", "()I", null, null);
+methodVisitor.visitCode();
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitFieldInsn(GETFIELD, "org/example/Person", "age", "I");
+methodVisitor.visitInsn(IRETURN);
+methodVisitor.visitMaxs(1, 1);
+methodVisitor.visitEnd();
+}
+{
+methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
+methodVisitor.visitCode();
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitFieldInsn(GETFIELD, "org/example/Person", "name", "Ljava/lang/String;");
+methodVisitor.visitVarInsn(ALOAD, 0);
+methodVisitor.visitFieldInsn(GETFIELD, "org/example/Person", "age", "I");
+methodVisitor.visitInvokeDynamicInsn("makeConcatWithConstants", "(Ljava/lang/String;I)Ljava/lang/String;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/StringConcatFactory", "makeConcatWithConstants", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;", false), new Object[]{"Person{name='\u0001', age=\u0001}"});
+methodVisitor.visitInsn(ARETURN);
+methodVisitor.visitMaxs(2, 1);
+methodVisitor.visitEnd();
+}
+classWriter.visitEnd();
+
+return classWriter.toByteArray();
+}
+}
+----

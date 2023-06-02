@@ -1,0 +1,44 @@
+## SYNOPSIS
+asmify zip  _File_ _Directory_
+
+## DESCRIPTION
+Read the specified zip archive and output all contents to the specified directory.
+
+The  contents  of  the zip will be extracted into a new folder in the output directory.  The new folder will be named after the zip file, which
+means it is possible to asmify several zip files into the same directory.  It also means there is no need to manually create a directory  named
+after the zip -- this tool will create that for you.
+
+As the tool iterates over the zip file, each zip entry will be handled as follows:
+
+- *class entries*: contents of the class file will be parsed into asmified format and written to the output directory with a ".asm"
+       extension. It is safe to view these files in an IDE as Java files and associate the ".asm" extension in your IDE accordingly.
+
+- *file entries*: entries that are unknown will be extracted as-is into the output directory.
+
+- *nested zip entries*: entries with a well-known zip extension (zip, jar, war, ear, rar) will be recursively extracted into the output
+       directory using the above logic.
+
+## PARAMETERS
+ - _File_: The path to a zip, jar, war, ear or similar file to parse and output as ASM.
+
+ - _Directory_: The directory where all files will be extracted and converted to ASM.
+
+## IMPORTANT
+This command is not a decompiler.
+
+It  should  be  noted  that not all bytecode can be translated to Java syntax.  This includes bytecode created by the Groovy, Scala, Kotlin and
+similar compilers.  Similarly, one Java source file can result in several class files.  It is not the goal of this tool to attempt to erase  or
+hide the class files.
+
+## EXAMPLE
+To view the asmified output of a zip file and output that into a directory in /tmp/
+
+    mkdir /tmp/foo
+    asmify zip target/myapp.war /tmp/foo
+
+The  above  would  result  in  a new directory called /tmp/foo/myapp.war containing the extracted and asmified contents of target/myapp.war
+
+## RELATED
+To output an individual class file
+
+    asmify class target/classes/org/example/colors/Orange.class

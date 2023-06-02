@@ -26,7 +26,7 @@ import java.util.zip.ZipInputStream;
 public class AsmifierCommand {
 
     /**
-     * Read the specified class and output the ASM code required to create that class via ASM.
+     * Read the specified File as a class and output the ASM code required to create that class via ASM.
      *
      * The output of the command is Java code that uses the ASM APIs to build a class definition that would
      * be identical to the class file specified.  This allows for a text-searchable representation of the bytecode,

@@ -1,0 +1,28 @@
+## SYNOPSIS
+asmify class  _File_
+
+## DESCRIPTION
+Read the specified File as a class and output the ASM code required to create that class via ASM.
+
+The  output of the command is Java code that uses the ASM APIs to build a class definition that would be identical to the class file specified.
+This allows for a text-searchable representation of the bytecode, which can be very useful for analyzing the impact of bytecode  transformation
+tools.
+
+All output is written to the console
+
+## IMPORTANT
+This command is not a decompiler.
+
+It  should  be  noted  that not all bytecode can be translated to Java syntax.  This includes bytecode created by the Groovy, Scala, Kotlin and
+similar compilers.  Similarly, one Java source file can result in several class files.  It is not the goal of this tool to attempt to erase  or
+hide the class files.
+
+## EXAMPLE
+To view the asmified output of a class file in the target directory of a Maven build
+
+    asmify class target/classes/org/example/colors/Orange.class
+
+## RELATED
+To process an entire zip file
+
+    asmify zip target/myapp.war /tmp/foo
